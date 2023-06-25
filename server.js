@@ -3,7 +3,11 @@ const express = require('express');
 const port = 3333;
 const app = express();
 const server = require('http').Server(app);
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {
+    cors: {
+        origin: '*',
+    }
+});
 
 const rooms = new Map();
 
@@ -12,10 +16,10 @@ app.get('/rooms', (req, res) => {
 })
 
 io.on('connection', (socket) => {
-    console.log(`User connected: ${socket}`);
+    console.log(`User connected: ${socket.id}`);
 });
 
-app.listen(port, (err) => {
+server.listen(port, (err) => {
     if(err){
         throw Error(err);
     }
