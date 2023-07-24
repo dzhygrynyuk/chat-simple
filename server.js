@@ -13,7 +13,11 @@ const rooms = new Map();
 
 app.get('/rooms', (req, res) => {
     res.json(rooms);
-})
+});
+
+app.post('/rooms', (req, res) => {
+    res.send();
+});
 
 io.on('connection', (socket) => {
     console.log(`User connected: ${socket.id}`);
