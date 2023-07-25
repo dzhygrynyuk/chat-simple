@@ -10,6 +10,8 @@ function App() {
     joined: false,
     roomId: null,
     userName: null,
+    users: [],
+    messages: [],
   });
 
   const onLogin = (obj) => {
@@ -20,15 +22,21 @@ function App() {
     socket.emit('ROOM:JOIN', obj);
   };
 
-  React.useEffect(() => {
-    socket.on('ROOM:JOINED', (users) => {
-      console.log('New user', users);
+  const setUsers = (users) => {
+    dispatch({
+      type: 'SET_USERS',
+      payload: users
     });
+  }
+
+  React.useEffect(() => {
+    socket.on('ROOM:JOINED', setUsers);
+    socket.on('ROOM:DISCONNECTED', setUsers);
   }, []);
 
   return (
     <div className="wrapper">
-      {!state.isAuth ? <JoinBlock onLogin={onLogin} /> : <Chat />}
+      {!state.isAuth ? <JoinBlock onLogin={onLogin} /> : <Chat {...state} />}
     </div>
   );
 }

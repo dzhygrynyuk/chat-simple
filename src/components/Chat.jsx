@@ -1,14 +1,16 @@
 import React from "react";
 
-function Chat() {
+function Chat({ users, messages }) {
     const [messageValue, setMessageValue] = React.useState('');
 
     return(
         <div className="chat">
             <div className="chat-users">
-                <b>Users (1):</b>
+                <b>Users ({users.length}):</b>
                 <ul>
-                    <li>Test User</li>
+                    {users.map((name, index) => (
+                        <li key={`user-name_${index}`}>{name}</li>
+                    ))}
                 </ul>
             </div>
             <div className="chat-messages">

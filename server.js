@@ -39,6 +39,15 @@ io.on('connection', (socket) => {
         socket.broadcast.to(roomId).emit('ROOM:JOINED', users);
     });
 
+    socket.on('disconnect', () => {
+        rooms.forEach((value, roomId) => {
+            if( value.get('users').delete(socket.id) ){
+                const users = [...value.get('users').values()];
+                socket.broadcast.to(roomId).emit('ROOM:DISCONNECTED', users);
+            }
+        });
+    });
+
     console.log(`User connected: ${socket.id}`);
 });
 
