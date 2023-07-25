@@ -3,6 +3,7 @@ import socket from './socket';
 
 import reducer from "./reducer";
 import JoinBlock from "./components/JoinBlock";
+import Chat from "./components/Chat";
 
 function App() {
   const [state, dispatch] = React.useReducer(reducer, {
@@ -27,7 +28,7 @@ function App() {
 
   return (
     <div className="wrapper">
-      {!state.isAuth && <JoinBlock onLogin={onLogin} />}
+      {!state.isAuth ? <JoinBlock onLogin={onLogin} /> : <Chat />}
     </div>
   );
 }
