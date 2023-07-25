@@ -2,19 +2,22 @@ import React from "react";
 import axios from "axios";
 import socket from "../socket";
 
-function JoinBlock() {
+function JoinBlock({ onLogin }) {
     const [roomId, setRoomId] = React.useState('');
-    const [name, setName] = React.useState('');
+    const [userName, setUserName] = React.useState('');
+    const [isLoading, setLoading] = React.useState(false);
 
-    const onEnter = () => {
-        if(!roomId && !name){
+    const onEnter = async () => {
+        if(!roomId && !userName){
             return alert('Some form inputs are invalid!!!');
         }
 
-        axios.post('/rooms', {
+        setLoading(true);
+        await axios.post('/rooms', {
             roomId,
-            name
+            userName
         });
+        onLogin();
     }
 
     return(
@@ -28,10 +31,12 @@ function JoinBlock() {
             <input 
                 type="text" 
                 placeholder="Your name" 
-                value={name} 
-                onChange={e => setName(e.target.value)}
+                value={userName} 
+                onChange={e => setUserName(e.target.value)}
             />
-            <button onClick={onEnter} className="btn btn-success">Login</button>
+            <button onClick={onEnter} disabled={isLoading} className="btn btn-success">
+                {isLoading ? 'Loading...' : 'Login'}
+            </button>
         </div>
     );
 }

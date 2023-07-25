@@ -9,6 +9,8 @@ const io = require('socket.io')(server, {
     }
 });
 
+app.use(express.json());
+
 const rooms = new Map();
 
 app.get('/rooms', (req, res) => {
@@ -16,6 +18,16 @@ app.get('/rooms', (req, res) => {
 });
 
 app.post('/rooms', (req, res) => {
+    const {roomId, userName} = req.body;
+    if(!rooms.has(roomId)){
+        rooms.set(
+            roomId,
+            new Map([
+                ['users', new Map()],
+                ['messages', []],
+            ]),
+        );
+    }
     res.send();
 });
 
