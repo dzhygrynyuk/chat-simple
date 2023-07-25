@@ -1,6 +1,5 @@
 import React from "react";
 import axios from "axios";
-import socket from "../socket";
 
 function JoinBlock({ onLogin }) {
     const [roomId, setRoomId] = React.useState('');
@@ -12,12 +11,14 @@ function JoinBlock({ onLogin }) {
             return alert('Some form inputs are invalid!!!');
         }
 
-        setLoading(true);
-        await axios.post('/rooms', {
+        const obj = {
             roomId,
             userName
-        });
-        onLogin();
+        };
+
+        setLoading(true);
+        await axios.post('/rooms', obj);
+        onLogin(obj);
     }
 
     return(

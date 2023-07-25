@@ -1,19 +1,29 @@
 import React from "react";
+import socket from './socket';
 
 import reducer from "./reducer";
 import JoinBlock from "./components/JoinBlock";
 
 function App() {
   const [state, dispatch] = React.useReducer(reducer, {
-    isAuth: false,
+    joined: false,
+    roomId: null,
+    userName: null,
   });
 
-  const onLogin = () => {
+  const onLogin = (obj) => {
     dispatch({
-      type: 'IS_AUTH',
-      payload: true
+      type: 'JOINED',
+      payload: obj
     });
-  }
+    socket.emit('ROOM:JOIN', obj);
+  };
+
+  React.useEffect(() => {
+    socket.on('ROOM:JOINED', (users) => {
+      console.log('New user', users);
+    });
+  }, []);
 
   return (
     <div className="wrapper">
