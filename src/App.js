@@ -1,5 +1,6 @@
 import React from "react";
 import socket from './socket';
+import axios from "axios";
 
 import reducer from "./reducer";
 import JoinBlock from "./components/JoinBlock";
@@ -14,14 +15,6 @@ function App() {
     messages: [],
   });
 
-  const onLogin = (obj) => {
-    dispatch({
-      type: 'JOINED',
-      payload: obj
-    });
-    socket.emit('ROOM:JOIN', obj);
-  };
-
   const setUsers = (users) => {
     dispatch({
       type: 'SET_USERS',
@@ -29,9 +22,18 @@ function App() {
     });
   }
 
+  const onLogin = async (obj) => {
+    dispatch({
+      type: 'JOINED',
+      payload: obj
+    });
+    socket.emit('ROOM:JOIN', obj);
+    const { data } = await axios.get(`/rooms/${obj.roomId}`);
+    setUsers(data.users);
+  };
+
   React.useEffect(() => {
-    socket.on('ROOM:JOINED', setUsers);
-    socket.on('ROOM:DISCONNECTED', setUsers);
+    socket.on('ROOM:SET_USERS', setUsers);
   }, []);
 
   return (
