@@ -20,6 +20,13 @@ export default (state, action) => {
                 messages: [...state.messages, action.payload],
             };
 
+        case 'SET_DATA':
+                return{
+                    ...state,
+                    users: action.payload.users,
+                    messages: action.payload.messages,
+                };    
+
         default:
             return state;
     }
