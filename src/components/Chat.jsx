@@ -1,11 +1,27 @@
 import React from "react";
+import socket from "../socket";
 
-function Chat({ users, messages }) {
+function Chat({ users, messages, userName, roomId, onAddMessage }) {
     const [messageValue, setMessageValue] = React.useState('');
+
+    const onSendMessage = () => {
+        socket.emit('ROOM:NEW_MESSAGE', {
+            roomId,
+            userName, 
+            text: messageValue,
+        });
+        onAddMessage({
+            userName, 
+            text: messageValue
+        });
+        setMessageValue('');
+    }
 
     return(
         <div className="chat">
             <div className="chat-users">
+                <span>Room: <b>{roomId}</b></span>
+                <hr />
                 <b>Users ({users.length}):</b>
                 <ul>
                     {users.map((name, index) => (
@@ -15,18 +31,14 @@ function Chat({ users, messages }) {
             </div>
             <div className="chat-messages">
                 <div className="messages">
-                    <div className="message">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                        <div>
-                            <span>Test User</span>
+                    {messages.map((message, index) => (
+                        <div key={`message-item_${index}`} className="message">
+                            <p>{message.text}</p>
+                            <div>
+                                <span>{message.userName}</span>
+                            </div>
                         </div>
-                    </div>
-                    <div className="message">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                        <div>
-                            <span>Test User</span>
-                        </div>
-                    </div>
+                    ))}
                 </div>
                 <form>
                     <textarea 
@@ -34,7 +46,7 @@ function Chat({ users, messages }) {
                         onChange={(e) => setMessageValue(e.target.value)}
                         className="form-control"
                         rows='3'></textarea>
-                    <button type="button" className="btn btn-primary">Send</button>    
+                    <button onClick={onSendMessage} type="button" className="btn btn-primary">Send</button>    
                 </form>
             </div>
         </div>

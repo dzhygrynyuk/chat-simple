@@ -22,6 +22,13 @@ function App() {
     });
   }
 
+  const addMessage = (message) => {
+    dispatch({
+      type: 'NEW_MESSAGE',
+      payload: message
+    });
+  }
+
   const onLogin = async (obj) => {
     dispatch({
       type: 'JOINED',
@@ -34,11 +41,12 @@ function App() {
 
   React.useEffect(() => {
     socket.on('ROOM:SET_USERS', setUsers);
+    socket.on('ROOM:NEW_MESSAGE', addMessage);
   }, []);
 
   return (
     <div className="wrapper">
-      {!state.isAuth ? <JoinBlock onLogin={onLogin} /> : <Chat {...state} />}
+      {!state.isAuth ? <JoinBlock onLogin={onLogin} /> : <Chat {...state} onAddMessage={addMessage} />}
     </div>
   );
 }
